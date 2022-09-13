@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class GeneratedColorCode implements ColorCodeInterface {
+public class GeneratedColorCode implements ColorCode {
 
     private final List<String> generatedColorCode;
 
@@ -34,5 +34,10 @@ public class GeneratedColorCode implements ColorCodeInterface {
     public List<String> get() {
 
         return generatedColorCode;
+    }
+
+    @Override
+    public String getColor(int index) {
+        return generatedColorCode.get(index);
     }
 }

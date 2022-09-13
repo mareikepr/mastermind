@@ -1,25 +1,24 @@
 package domain;
 
-import ui.MasterMindUI;
-
-import javax.swing.text.html.Option;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-public class GuessedColorCode implements ColorCodeInterface {
+public class GuessedColorCode implements ColorCode {
 
     private final List<String> guessColorCode;
 
-    public GuessedColorCode (List<String> guessedColorCode) {
+    public GuessedColorCode (List<String> guessColorCode) {
 
-        guessColorCode = guessedColorCode;
+        this.guessColorCode = guessColorCode;
     }
 
     @Override
     public List<String> get() {
 
         return guessColorCode;
+    }
+
+    @Override
+    public String getColor(int index) {
+        return guessColorCode.get(index);
     }
 }
