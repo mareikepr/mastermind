@@ -6,67 +6,93 @@ import java.util.*;
 
 public class GameLogic {
 
-    MasterMindUI masterMindUI;
-
-    private List<String> guessCode = new ArrayList<>();
+    private final MasterMindUI masterMindUI;
+    private final ColorCodeInterface genColorCode;
     private final List<String> genCode;
+    private List<String> guessCode;
+    private List<String> tempGuessCode;
+    private List<String> tempGenCode;
 
     public GameLogic (MasterMindUI masterMindUI) {
 
         this.masterMindUI = masterMindUI;
-        ColorCodeInterface genColorCode = new GeneratedColorCode();
-        genCode = genColorCode.getColorCode();
+        genColorCode = new GeneratedColorCode();
+        genCode = genColorCode.get();
         gameLoop();
     }
 
     public void gameLoop () {
 
-        boolean correctGuess = false;
+        boolean correctGuess;
         int guessCount = 0;
 
-        while (!correctGuess) {
-
+         do {
             guessCount += 1;
-            guessCode = getValidCode(guessCount);
+            getValidCode(guessCount);
+            correctGuess = genCode.equals(guessCode);
 
-            if (genCode.equals(guessCode)) {
-                correctGuess = genCode.equals(guessCode);
-                masterMindUI.printEnd(guessCode);
-            } else {
+            if (!correctGuess) {
                 List<String> blackWhiteStringArray = checkBlackWhite();
                 masterMindUI.printResponse(blackWhiteStringArray);
             }
-        }
+         } while (!correctGuess);
+
+        masterMindUI.printEnd(guessCode, guessCount);
+
     }
 
-    private List<String> getValidCode(int guessCount) {
+    private void getValidCode(int guessCount) {
 
-        boolean validCode = false;
-        GuessedColorCode guessedColorCode;
+        Optional<List<String>> optCode;
+
         do {
-            String guess = masterMindUI.makeAGuess(guessCount);
-            guessedColorCode = new GuessedColorCode(guess);
-            guessCode = guessedColorCode.getColorCode();
+            Optional<String> optGuess = masterMindUI.makeAGuess(guessCount);
 
-            if (guessCode != null) {
-                validCode = true;
+            if (optGuess.isPresent()) {
+                optCode = getOptCode(optGuess.get());
             } else {
-                masterMindUI.printInvalidCodeMessage();
+                masterMindUI.printBreak(genCode, guessCount);
+                System.exit(0);
+                optCode = Optional.empty();
             }
-        } while (!validCode);
+        } while (optCode.isEmpty());
 
-        return guessCode;
+        ColorCodeInterface guessedColorCode = new GuessedColorCode(optCode.get());
+        guessCode = guessedColorCode.get();
+    }
+
+    private Optional<List<String>> getOptCode (String guess) {
+
+        List<String> splitCode = List.of(guess.split("\s"));
+
+        if ( splitCode.size() == genColorCode.numberColors && genColorCode.availableColors.containsAll(splitCode)) {
+
+            return Optional.of(new ArrayList<>(Arrays.asList(guess.split("\s")).subList(0, genColorCode.numberColors)));
+        } else {
+            masterMindUI.printInvalidCodeMessage();
+            return Optional.empty();
+        }
     }
 
     private List<String> checkBlackWhite() {
 
         List<String> blackWhites = new ArrayList<>();
 
-        List<String> tempGuessCode = new ArrayList<>(guessCode);
-        List<String> tempGenCode = new ArrayList<>(genCode);
+        tempGuessCode = new ArrayList<>(guessCode);
+        tempGenCode = new ArrayList<>(genCode);
+
+        List<Integer> blackIndex = checkBlack();
+        List<Integer> whiteIndex = checkWhite();
+
+        blackIndex.forEach(b -> blackWhites.add("black"));
+        whiteIndex.forEach(w -> blackWhites.add("white"));
+
+        return blackWhites;
+    }
+
+    private List<Integer> checkBlack() {
 
         List<Integer> blackIndex = new ArrayList<>();
-        List<Integer> whiteIndex = new ArrayList<>();
 
         for (int i = 0; i < genCode.size(); i++) {
             if (guessCode.get(i).equals(genCode.get(i))) {
@@ -75,6 +101,12 @@ public class GameLogic {
                 tempGenCode.set(i, "checked");
             }
         }
+        return blackIndex;
+    }
+
+    private List<Integer> checkWhite() {
+
+        List<Integer> whiteIndex = new ArrayList<>();
 
         for (int i = 0; i < genCode.size(); i++) {
             if (tempGenCode.get(i).equals("checked")) {
@@ -92,10 +124,6 @@ public class GameLogic {
                 }
             }
         }
-
-        blackIndex.forEach(b -> blackWhites.add("black"));
-        whiteIndex.forEach(w -> blackWhites.add("white"));
-
-        return blackWhites;
+        return whiteIndex;
     }
 }

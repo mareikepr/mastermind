@@ -1,35 +1,25 @@
 package domain;
 
+import ui.MasterMindUI;
+
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class GuessedColorCode implements ColorCodeInterface {
 
-    private final List<String> guessedColorCode;
+    private final List<String> guessColorCode;
 
-    public GuessedColorCode (String guessedColorCode) {
+    public GuessedColorCode (List<String> guessedColorCode) {
 
-        this.guessedColorCode = stringToColorCode(guessedColorCode);
-        //System.out.println("Guessed code is " + getColorCode());
-    }
-
-    private List<String> stringToColorCode(String givenColorCode) {
-
-        List<String> splitCode = List.of(givenColorCode.split("\s"));
-
-        if ( splitCode.size() == numberColors && splitCode.stream().allMatch(availableColors::contains)) {
-
-            return new ArrayList<>(Arrays.asList(givenColorCode.split("\s")).subList(0, numberColors));
-        } else {
-            return null;
-        }
-
+        guessColorCode = guessedColorCode;
     }
 
     @Override
-    public List<String> getColorCode() {
+    public List<String> get() {
 
-        return guessedColorCode;
+        return guessColorCode;
     }
 }

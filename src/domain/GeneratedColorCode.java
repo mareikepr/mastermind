@@ -8,9 +8,9 @@ public class GeneratedColorCode implements ColorCodeInterface {
 
     private final List<String> generatedColorCode;
 
-    public GeneratedColorCode () {
+    public GeneratedColorCode() {
         this.generatedColorCode = generateColorCode();
-        System.out.println(" (Test: Generated color code " + getColorCode() + ")");
+        System.out.println(" (Test: Generated color code " + get() + ")");
     }
 
     public List<String> generateColorCode() {
@@ -31,7 +31,7 @@ public class GeneratedColorCode implements ColorCodeInterface {
     }
 
     @Override
-    public List<String> getColorCode() {
+    public List<String> get() {
 
         return generatedColorCode;
     }
