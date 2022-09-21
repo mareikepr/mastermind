@@ -8,9 +8,12 @@ public class GeneratedColorCode implements ColorCode {
 
     private final List<String> generatedColorCode;
 
-    public GeneratedColorCode() {
+    public GeneratedColorCode(String mode) {
         this.generatedColorCode = generateColorCode();
-        System.out.println(" (Test: Generated color code " + get() + ")");
+
+        if (mode.equals("debug")) {
+            System.out.println(" (Test: Generated color code " + get() + ")");
+        }
     }
 
     public List<String> generateColorCode() {

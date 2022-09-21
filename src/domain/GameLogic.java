@@ -15,7 +15,7 @@ public class GameLogic {
     public GameLogic (MasterMindUI masterMindUI) {
 
         this.masterMindUI = masterMindUI;
-        genCode = new GeneratedColorCode();
+        genCode = new GeneratedColorCode(masterMindUI.mode);
         gameLoop();
     }
 

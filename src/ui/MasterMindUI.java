@@ -10,12 +10,16 @@ import java.util.Scanner;
 public class MasterMindUI {
 
     private final Scanner scan = new Scanner(System.in);
-
     private LocalTime startTime;
+    public String mode = "";
 
-    public MasterMindUI () {
+    public MasterMindUI (String[] args) {
 
+        if (args.length==1) {
+            mode = args[0];
+        }
         startGame();
+
     }
 
     public void startGame() {
